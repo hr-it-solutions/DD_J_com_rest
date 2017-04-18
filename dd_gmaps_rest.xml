@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension type="component" version="3.6.5" method="upgrade">
+    <name>com_dd_rest</name>
+    <version>1.1.0.0</version>
+    <creationDate>18.04.2017</creationDate>
+    <author>HR IT-Solutions Florian Häusler</author>
+    <authorEmail>info@hr-it-solutions.com</authorEmail>
+    <authorUrl>https://www.hr-it-solutions.com</authorUrl>
+    <copyright>Copyright (C) 2011 - 2017 Didldu e.K. | HR IT-Solutions</copyright>
+    <license>GNU/GPLv2 only</license>
+    <description>COM_DD_REST_XML_DESCRIPTION</description>
+
+    <!-- Runss on install -->
+    <scriptfile>script.php</scriptfile>
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+
+    <!-- Runs on uninstall-->
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+
+    <!-- Runs on update -->
+    <update>
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+
+    <files folder="site">
+        <filename>controller.php</filename>
+        <filename>dd_rest.php</filename>
+        <folder>language</folder>
+        <folder>models</folder>
+        <folder>views</folder>
+    </files>
+    <languages folder="site">
+        <language tag="en-GB">language/en-GB/en-GB.com_dd_rest.ini</language>
+        <language tag="de-DE">language/de-DE/de-DE.com_dd_rest.ini</language>
+    </languages>
+
+    <administration>
+        <menu view="default">COM_DD_REST</menu>
+        <submenu>
+            <menu link="option=com_dd_gmaps_locations" img="class:generic"
+                  alt="DD_GMaps_Locations">COM_DD_REST_MENU_SUBMENU_DASHBOARD</menu>
+        </submenu>
+
+        <files folder="admin">
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>dd_rest.php</filename>
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>language</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+        </files>
+        <languages folder="admin">
+            <language tag="en-GB">language/en-GB/en-GB.com_dd_rest.ini</language>
+            <language tag="en-GB">language/en-GB/en-GB.com_dd_rest.sys.ini</language>
+            <language tag="de-DE">language/de-DE/de-DE.com_dd_rest.ini</language>
+            <language tag="de-DE">language/de-DE/de-DE.com_dd_rest.sys.ini</language>
+        </languages>
+    </administration>
+
+    <media destination="com_dd_rest" folder="media">
+        <folder>css</folder>
+        <folder>js</folder>
+    </media>
+
+    <!-- Update servers -->
+    <updateservers>
+        <server type="collection" priority="1" name="HR IT-Solutions Updates">http://www.hr-it-solutions.com/jextensions/update.xml</server>
+    </updateservers>
+</extension>
