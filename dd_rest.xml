@@ -10,39 +10,10 @@
     <license>GNU/GPLv2 only</license>
     <description>COM_DD_REST_XML_DESCRIPTION</description>
 
-    <!-- Runss on install -->
-    <scriptfile>script.php</scriptfile>
-    <install>
-        <sql>
-            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
-        </sql>
-    </install>
-
-    <!-- Runs on uninstall-->
-    <uninstall>
-        <sql>
-            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
-        </sql>
-    </uninstall>
-
-    <!-- Runs on update -->
-    <update>
-        <schemas>
-            <schemapath type="mysql">sql/updates/mysql</schemapath>
-        </schemas>
-    </update>
-
     <files folder="site">
         <filename>controller.php</filename>
         <filename>dd_rest.php</filename>
-        <folder>language</folder>
-        <folder>models</folder>
-        <folder>views</folder>
     </files>
-    <languages folder="site">
-        <language tag="en-GB">language/en-GB/en-GB.com_dd_rest.ini</language>
-        <language tag="de-DE">language/de-DE/de-DE.com_dd_rest.ini</language>
-    </languages>
 
     <administration>
         <menu view="default">COM_DD_REST</menu>
@@ -56,12 +27,8 @@
             <filename>config.xml</filename>
             <filename>controller.php</filename>
             <filename>dd_rest.php</filename>
-            <folder>controllers</folder>
             <folder>helpers</folder>
             <folder>language</folder>
-            <folder>models</folder>
-            <folder>sql</folder>
-            <folder>tables</folder>
             <folder>views</folder>
         </files>
         <languages folder="admin">
@@ -71,11 +38,6 @@
             <language tag="de-DE">language/de-DE/de-DE.com_dd_rest.sys.ini</language>
         </languages>
     </administration>
-
-    <media destination="com_dd_rest" folder="media">
-        <folder>css</folder>
-        <folder>js</folder>
-    </media>
 
     <!-- Update servers -->
     <updateservers>
