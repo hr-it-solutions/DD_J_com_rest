@@ -55,7 +55,7 @@ class DD_RestViewDashboard extends JViewLegacy
 	{
 		$canDo = JHelperContent::getActions('com_dd_rest');
 
-		JToolBarHelper::title(JText::_('COM_DD_REST_TOOLBARTITLE_LOCATIONS'), 'grid');
+		JToolBarHelper::title(JText::_('COM_DD_REST_TOOLBARTITLE_DASBOARD'), 'grid');
 
 		if ($canDo->get('core.admin'))
 		{
