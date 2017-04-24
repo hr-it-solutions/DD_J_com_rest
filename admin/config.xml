@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <!-- Component -->
+    <fieldset name="component"
+              label="COM_DD_REST"
+              description="COM_DD_REST_XML_DESCRIPTION">
+
+    </fieldset>
+
+    <!-- Permissions -->
+    <fieldset name="permissions"
+              description="JCONFIG_PERMISSIONS_DESC"
+              label="JCONFIG_PERMISSIONS_LABEL"
+    >
+
+        <field name="rules" type="rules"
+               component="com_dd_rest"
+               filter="rules"
+               validate="rules"
+               label="JCONFIG_PERMISSIONS_LABEL"
+               section="component"
+        />
+
+    </fieldset>
+</config>
