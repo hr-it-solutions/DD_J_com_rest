@@ -73,7 +73,7 @@ class DD_RestViewDashboard extends JViewLegacy
 	 */
 	protected function addSidebar()
 	{
-		DD_GMaps_LocationsHelper::addSubmenu('dashboard');
+		DD_RestHelper::addSubmenu('dashboard');
 		$this->sidebar = JHtml::_('sidebar.render');
 	}
 }
