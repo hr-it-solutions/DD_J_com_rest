@@ -8,6 +8,8 @@
 
 defined('_JEXEC') or die;
 
+require_once JPATH_COMPONENT . '/helpers/dd_rest.php';
+
 $controller = JControllerLegacy::getInstance('DD_Rest');
 $controller->execute(JFactory::getApplication()->input->get('task'));
 $controller->redirect();
