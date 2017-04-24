@@ -28,16 +28,14 @@ class DD_RestController extends JControllerLegacy {
 
 		if ($data != '')
 		{
-			$model = $this->getModel('Locations');
-
 			// todo! output
-			$html = '';
-			// $items = $model->getAjaxList($data);
-			// $html = $model->bufferAjaxOutputView($items,$data);
+			// $model = $this->getModel('??');
+			// $items = $model->get??($data);
+			// $html = $model->??($items,$data);
 
 			$results = array(
 				'success' => true,
-				'html' => $html
+				'html' => ''
 			);
 		}
 		else
