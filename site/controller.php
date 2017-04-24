@@ -12,6 +12,7 @@ class DD_RestController extends JControllerLegacy {
 
 	/**
 	 * getAjax
+	 * index.php?option=com_dd_rest&task=getAjax&format=json
 	 *
 	 * @since Version 1.1.0.0
 	 *
