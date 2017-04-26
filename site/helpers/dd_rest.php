@@ -17,7 +17,7 @@ class DD_RestHelper
 {
 
 	/**
-	 * getComponentModels
+	 * getComponentModel
 	 *
 	 * @param   string  $type    The model type to instantiate (e.g. 'Article')
 	 * @param   string  $prefix  Prefix for the model class name. Optional. (e.g. 'ContentModel')
@@ -26,7 +26,7 @@ class DD_RestHelper
 	 *
 	 * @return JModelLegacy|boolean   A JModelLegacy instance or false on failure
 	 */
-	private function getComponentModels($type, $prefix)
+	private function getComponentModel($type, $prefix)
 	{
 		jimport('joomla.application.component.model');
 		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_content/models');
