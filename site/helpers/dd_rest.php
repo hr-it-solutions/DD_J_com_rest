@@ -15,6 +15,52 @@ defined('_JEXEC') or die;
  */
 class DD_RestHelper
 {
+
+	/**
+	 * getComponentJson
+	 *
+	 * @param   string   $component  The component name without the prefix  (e.g. 'content')
+	 * @param   string   $type       The model type to instantiate          (e.g. 'article')
+	 * @param   integer  $id         The id of the element
+	 *
+	 * @since  Version 1.0.0
+	 *
+	 * return
+	 */
+	public function getComponentJson($component, $type, $id)
+	{
+		$ModelClassPrefix = ucfirst($component) . 'Model';
+		$ModelType = ucfirst($type);
+
+		$model = $this->getComponentModel($component, $ModelType, $ModelClassPrefix);
+
+		return json_encode($this->getComponentModelItem_s($model, $id));
+	}
+
+	/**
+	 * Wrapper Method to get a single item or multiple items
+	 *
+	 * @param   JModelLegacy  $model  A JModel instance
+	 * @param   integer       $id     The id of the element
+	 *
+	 * @return object|boolean  item(s) data object on success, boolean false on error
+	 */
+	private function getComponentModelItem_s($model, $id = 0)
+	{
+		if (method_exists($model, 'getItem'))
+		{
+			return $model->getItem($id);
+		}
+		elseif (method_exists($model, 'getItems'))
+		{
+			return $model->getItems();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	/**
 	 * getComponentModel
 	 *
