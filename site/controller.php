@@ -12,7 +12,7 @@ class DD_RestController extends JControllerLegacy {
 
 	/**
 	 * getAjax
-	 * index.php?option=com_dd_rest&task=getAjax&format=json
+	 * index.php?option=com_dd_rest&task=getAjax&format=json&com=content
 	 *
 	 * @since Version 1.1.0.0
 	 *
@@ -23,19 +23,31 @@ class DD_RestController extends JControllerLegacy {
 		$format = strtolower(JRequest::getWord('format', 'raw'));
 		$app    = JFactory::getApplication();
 		$input  = $app->input;
-		$data   = $input->get("data", '', 'array');
 		$callback = $input->get('callback', 'not set');
 
-		if ($data != '')
+		$data_component   = $input->get("com", '', 'STRING');
+		$data_type        = $input->get("type", '', 'STRING');
+		$data_id          = $input->get("id", 0, 'INTEGER');
+
+		if ($data_component)
 		{
-			// todo! output
-			// $model = $this->getModel('??');
-			// $items = $model->get??($data);
-			// $html = $model->??($items,$data);
+			$RestHelper = new DD_RestHelper;
+			$json = $RestHelper->getComponentJson($data_component, $data_type, $data_id);
+
+			if ($json)
+			{
+				$success = true;
+			}
+			else
+			{
+				$success = false;
+			}
 
 			$results = array(
-				'success' => true,
-				'html' => ''
+				'success' => $success,
+				'component' => $data_component,
+				'type' => $data_type,
+				'json' => $json
 			);
 		}
 		else
@@ -46,27 +58,21 @@ class DD_RestController extends JControllerLegacy {
 
 		switch ($format)
 		{
-			case 'json': JResponse::setHeader('Content-Type', 'application/json', true);
-
-				if ($callback == "not set")
-				{
-					echo json_encode($results);
-				}
-				else
-				{
-					JResponse::setHeader('Access-Control-Allow-Origin:', '*');
-					echo $callback . '(' . json_encode($results) . ')';
-				}
-
-				$app->close();
-				break;
-
 			case 'debug': echo '<pre>' . print_r($results, true) . '</pre>';
 				$app->close();
 				break;
 
-			case 'raw':
-			default: echo is_array($results) ? implode($results) : $results;
+			default: JResponse::setHeader('Content-Type', 'application/json', true);
+
+				if ($callback == "not set")
+				{
+					echo json_encode($results, JSON_HEX_APOS);
+				}
+				else
+				{
+					JResponse::setHeader('Access-Control-Allow-Origin:', '*');
+					echo $callback . '(' . json_encode($results, JSON_HEX_APOS) . ')';
+				}
 
 				$app->close();
 				break;
