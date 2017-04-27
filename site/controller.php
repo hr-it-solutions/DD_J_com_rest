@@ -32,7 +32,7 @@ class DD_RestController extends JControllerLegacy {
 		if ($data_component)
 		{
 			$RestHelper = new DD_RestHelper;
-			$json = $RestHelper->getComponentJson($data_component, $data_type, $data_id);
+			$json = $RestHelper->getComponentData($data_component, $data_type, $data_id);
 
 			if ($json)
 			{

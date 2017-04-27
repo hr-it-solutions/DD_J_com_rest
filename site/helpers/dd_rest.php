@@ -27,14 +27,14 @@ class DD_RestHelper
 	 *
 	 * return
 	 */
-	public function getComponentJson($component, $type, $id)
+	public function getComponentData($component, $type, $id = 0)
 	{
 		$ModelClassPrefix = ucfirst($component) . 'Model';
 		$ModelType = ucfirst($type);
 
 		$model = $this->getComponentModel($component, $ModelType, $ModelClassPrefix);
 
-		return json_encode($this->getComponentModelItem_s($model, $id));
+		return $this->getComponentModelItem_s($model, $id);
 	}
 
 	/**
@@ -75,7 +75,7 @@ class DD_RestHelper
 	private function getComponentModel($component, $type, $prefix)
 	{
 		jimport('joomla.application.component.model');
-		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_' . $component . '/models');
+		JModelLegacy::addIncludePath(JPATH_SITE . '/administrator/components/com_' . $component . '/models');
 
 		return JModelLegacy::getInstance($type, $prefix);
 	}
