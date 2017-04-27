@@ -15,21 +15,21 @@ defined('_JEXEC') or die;
  */
 class DD_RestHelper
 {
-
 	/**
 	 * getComponentModel
 	 *
-	 * @param   string  $type    The model type to instantiate (e.g. 'Article')
-	 * @param   string  $prefix  Prefix for the model class name. Optional. (e.g. 'ContentModel')
+	 * @param   string  $component  The component name without the prefix (e.g. 'content')
+	 * @param   string  $type       The model type to instantiate (e.g. 'Article')
+	 * @param   string  $prefix     Prefix for the model class name. Optional. (e.g. 'ContentModel')
 	 *
 	 * @since  Version 1.0.0
 	 *
 	 * @return JModelLegacy|boolean   A JModelLegacy instance or false on failure
 	 */
-	private function getComponentModel($type, $prefix)
+	private function getComponentModel($component, $type, $prefix)
 	{
 		jimport('joomla.application.component.model');
-		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_content/models');
+		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_' . $component . '/models');
 
 		return JModelLegacy::getInstance($type, $prefix);
 	}
