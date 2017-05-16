@@ -8,6 +8,10 @@
 
 defined('_JEXEC') or die;
 
+require_once JPATH_COMPONENT . '/lib/jwt/src/JWT.php';
+
+use \Firebase\JWT\JWT;
+
 /**
  * Class DD_RestHelper
  *
@@ -78,5 +82,28 @@ class DD_RestHelper
 		JModelLegacy::addIncludePath(JPATH_SITE . '/administrator/components/com_' . $component . '/models');
 
 		return JModelLegacy::getInstance($type, $prefix);
+	}
+
+	public function getJWT(){
+
+		$nbf = time();
+
+		$key = '7e716d0e702df0505fc72e2b89467910'; // "example_key";
+		$token = array(
+			"iss" => "http://" . $_SERVER['HTTP_HOST'], /*"http://dev1.hr-it-solutions.net"*/
+			"aud" => "http://devreborn.dev4.hr-it-solutions.net", // The "aud" (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the aud claim when this claim is present, then the JWT MUST be rejected.
+			"iat" => time() - 60 * 10,/*1356999524*/ // The "iat" (issued at) claim identifies the time at which the JWT was issued.
+			"nbf" => $nbf // Not before (nbf) - Similarly, the not-before time claim identifies the time on which the JWT will start to be accepted for processing.
+		);
+
+		/**
+		 * IMPORTANT:
+		 * You must specify supported algorithms for your application. See
+		 * https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
+		 * for a list of spec-compliant algorithms.
+		 */
+		$jwt = JWT::encode($token, $key);
+
+		return $jwt;
 	}
 }
