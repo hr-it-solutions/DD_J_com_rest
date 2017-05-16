@@ -79,13 +79,13 @@ class DD_RestHelper
 	private function getComponentModel($component, $type, $prefix)
 	{
 		jimport('joomla.application.component.model');
-		JModelLegacy::addIncludePath(JPATH_SITE . '/administrator/components/com_' . $component . '/models');
+		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_' . $component . '/models');
 
 		return JModelLegacy::getInstance($type, $prefix);
 	}
 
-	public function getJWT(){
-
+	public function getJWT()
+	{
 		$nbf = time();
 
 		$key = '7e716d0e702df0505fc72e2b89467910'; // "example_key";
