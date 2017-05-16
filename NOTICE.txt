@@ -1,0 +1,22 @@
+﻿// Multiple articles
+index.php?option=com_dd_rest&task=getAjax&format=json&com=content&type=articles
+
+// Single article
+index.php?option=com_dd_rest&task=getAjax&format=json&com=content&type=article&id=1
+index.php?option=com_dd_rest&task=getAjax&format=json&com=content&type=article&id=2
+
+// Featured articles
+index.php?option=com_dd_rest&task=getAjax&format=json&com=content&type=featured
+
+// Multiple categories
+index.php?option=com_dd_rest&task=getAjax&format=json&com=categories&type=categories
+
+// Multiple menues
+index.php?option=com_dd_rest&task=getAjax&format=json&com=menus&type=menus
+
+// Multiple users
+index.php?option=com_dd_rest&task=getAjax&format=json&com=users&type=users
+
+// Single users
+index.php?option=com_dd_rest&task=getAjax&format=json&com=users&type=user&id=260
+index.php?option=com_dd_rest&task=getAjax&format=json&com=users&type=user&id=261
