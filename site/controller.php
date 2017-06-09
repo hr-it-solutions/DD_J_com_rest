@@ -8,7 +8,30 @@
 
 defined('_JEXEC') or die;
 
-class DD_RestController extends JControllerLegacy {
+/**
+ * Class DD_RestController
+ */
+class DD_RestController extends JControllerLegacy
+{
+
+	// TODO Router format=json
+
+	protected $app;
+
+	// Set false to allow access from everywhere
+	protected $blockCrossAccess = false;
+
+	// Set $JoomlaAllowDirectAccess to true to turn off CrossAccess Blocking AND Backend API Key Connection (Allows to open view by URL on same HOST e.g. Browser Access)
+	protected $allowDirectAccess = true;
+
+	// Set $credentials to true if expects credential requests (Cookies, Authentication, SSL certificates)
+	protected $credentials = false;
+
+	// Allowed origins
+	protected $allowedOrigins = array(
+		'http://devreborn.dev4.hr-it-solutions.net',
+		'http://dev4.hr-it-solutions.net',
+	);
 
 	/**
 	 * getAjax
@@ -21,8 +44,8 @@ class DD_RestController extends JControllerLegacy {
 	public function getAjax()
 	{
 		$format = strtolower(JRequest::getWord('format', 'raw'));
-		$app    = JFactory::getApplication();
-		$input  = $app->input;
+		$this->app    = JFactory::getApplication();
+		$input  = $this->app->input;
 		$callback = $input->get('callback', 'not set');
 
 		$data_component   = $input->get("com", false, 'STRING');
@@ -58,7 +81,7 @@ class DD_RestController extends JControllerLegacy {
 		switch ($format)
 		{
 			case 'debug': echo '<pre>' . print_r($results, true) . '</pre>';
-				$app->close();
+				$this->app->close();
 				break;
 
 			default:
@@ -82,7 +105,7 @@ class DD_RestController extends JControllerLegacy {
 					}
 
 					echo 204;
-					$app->close();
+					$this->app->close();
 					break;
 				}
 
@@ -102,7 +125,7 @@ class DD_RestController extends JControllerLegacy {
 					echo $callback . '(' . json_encode($results, JSON_HEX_APOS) . ')';
 				}
 
-				$app->close();
+				$this->app->close();
 				break;
 
 		}
@@ -112,135 +135,103 @@ class DD_RestController extends JControllerLegacy {
 	}
 
 	/**
-	 * connect
-	 * index.php?option=com_dd_rest&task=connect
+	 * index.php?option=com_dd_rest&api=v1
 	 *
 	 * @since Version 1.1.0.0
 	 *
 	 * @return mixed
 	 */
-	public function connect()
+	public function v1()
 	{
-		$app = JFactory::getApplication();
-
-		// Set false to allow access from everywhere
-		$JoomlaParamBlockCrossAccess = false;
-
-		// Set $JoomlaAllowDirectAccess to true to turn off CrossAccess Blocking AND Backend API Key Connection (Allows to open view by URL on same HOST e.g. Browser Access)
-		$JoomlaAllowDirectAccess = true;
-
-		// Set $credentials to true if expects credential requests (Cookies, Authentication, SSL certificates)
-		$credentials = false;
-
-		$allowedOrigins = array(
-			'http://devreborn.dev4.hr-it-solutions.net',
-			'http://dev4.hr-it-solutions.net'
-		);
+		$this->app = JFactory::getApplication();
 
 		// Preflight Reqeust
-		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+		if (JInput::getMethod() == 'OPTIONS')
 		{
 			if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])
 				&& ($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] == 'POST'))
 			{
-				// Cross Domain access check
-				if (!$JoomlaAllowDirectAccess && $JoomlaParamBlockCrossAccess && !isset($_SERVER['HTTP_ORIGIN']))
-				{
-					return $this->close204($app);
-				}
+				// Set Headers
+				$this->setHeaders();
 
-				// Origin check
-				if (!$JoomlaAllowDirectAccess && !in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins))
-				{
-					// Origin is not allowed
-					return $this->close204($app);
-				}
-
-				$origin = !$credentials || !$JoomlaAllowDirectAccess ? '*' : $_SERVER['HTTP_ORIGIN'];
-
-				header('Access-Control-Allow-Origin: ' . $origin);
-
-				if ($JoomlaAllowDirectAccess && $credentials)
-				{
-					header('Access-Control-Allow-Credentials: true');
-				}
-
-				header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-				header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Access-Token, X-Auth-Token, X-Auth-Resource');
-				header('Access-Control-Max-Age: 86400');
-
-				// IE Cookies Support
-				header('P3P: CP="CAO PSA OUR"');
-
-				return $this->close204($app);
+				return $this->close204();
 			}
 
-			return $this->close204($app);
+			return $this->close204();
 		}
-		// Preflight Reqeust
+		// Reqeust
 		else
 		{
-			// Cross Domain access check
-			if (!$JoomlaAllowDirectAccess && $JoomlaParamBlockCrossAccess && !isset($_SERVER['HTTP_ORIGIN']))
-			{
-				return $this->close204($app);
-			}
+			header('content-type: application/json');
 
-			// Origin check
-			if (!$JoomlaAllowDirectAccess && !in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins))
-			{
-				// Origin is not allowed
-				return $this->close204($app);
-			}
+			// Set Headers
+			$this->setHeaders();
 
-			$origin = !$credentials || !$JoomlaAllowDirectAccess ? '*' : $_SERVER['HTTP_ORIGIN'];
-
-			header('Access-Control-Allow-Origin: ' . $origin);
-
-			if ($JoomlaAllowDirectAccess && $credentials)
-			{
-				header('Access-Control-Allow-Credentials: true');
-			}
-
-			JResponse::setHeader('Content-Type', 'application/json', true);
-
-			header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-			header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Access-Token, X-Auth-Token, X-Auth-Resource');
-
-			header('Access-Control-Max-Age: 86400');
-
-			// IE Cookies Support
-			header('P3P: CP="CAO PSA OUR"');
-
-			// JSON Output
+			// Get results
 			$RestHelper = new DD_RestHelper;
-			$jwt = $RestHelper->getJWT();
-			$results = array(
-				'success' => 'true',
-				'credentials' => array (
-					'token' => $jwt
-				)
-			);
+			$results = $RestHelper->getResults();
+
 			echo json_encode($results, JSON_HEX_APOS);
 
-			$app->close();
+			$this->app->close();
 		}
 
 		return false;
 	}
 
 	/**
-	 * close204
-	 *
-	 * @param   object  &$app  JFactory Application reference
+	 * setHeades
 	 *
 	 * @return bool
 	 */
-	private function close204(&$app)
+	protected function setHeaders()
+	{
+		// Cross Domain access check
+		if (!$this->allowDirectAccess && $this->blockCrossAccess && !isset($_SERVER['HTTP_ORIGIN']))
+		{
+			return $this->close204();
+		}
+
+		// Origin check
+		if (!$this->allowDirectAccess && !in_array($_SERVER['HTTP_ORIGIN'], $this->allowedOrigins))
+		{
+			// Origin is not allowed
+			return $this->close204();
+		}
+
+		$origin = !$this->credentials || !$this->allowDirectAccess ? '*' : $_SERVER['HTTP_ORIGIN'];
+
+		header('Access-Control-Allow-Origin: ' . $origin);
+
+		if ($this->allowDirectAccess && $this->credentials)
+		{
+			header('Access-Control-Allow-Credentials: true');
+		}
+
+		/* TODO
+		$this->app->setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS', true);
+		$this->app->setHeader('Access-Control-Allow-Methods', 'Origin, X-Requested-With, Content-Type, Accept, X-Access-Token, X-Auth-Token, X-Auth-Resource', true);
+		$this->app->setHeader('Access-Control-Max-Age', '86400', true);
+		*/
+
+		header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Access-Token, X-Auth-Token, X-Auth-Resource');
+		header('Access-Control-Max-Age: 86400');
+
+		// IE Cookies Support
+		header('P3P: CP="CAO PSA OUR"');
+	}
+
+	/**
+	 * close204
+	 *
+	 * @return bool
+	 */
+	private function close204()
 	{
 		http_response_code(204);
 		echo 204;
-		$app->close();
+		$this->app->close();
 
 		return false;
 	}
