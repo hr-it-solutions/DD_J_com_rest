@@ -21,6 +21,49 @@ class DD_RestHelper
 {
 
 	/**
+	 * getResults
+	 *
+	 * @return array
+	 */
+	public function getResults()
+	{
+		$role = 'guest';
+
+		// GET POST DATA
+		$json = file_get_contents('php://input');
+		$obj = json_decode($json);
+
+		// JSON Output
+		$jwt = $this->getJWT();
+
+		// Test this by direct access
+		// print_r($obj);
+
+		JPluginHelper::importPlugin('dd_rest');
+		$dispatcher = JEventDispatcher::getInstance();
+		$plg_results = $dispatcher->trigger('onRestRun', array(&$obj, &$role, $jwt));
+
+		if (!empty($plg_results))
+		{
+			$results = $plg_results; // prepear plg_results in loop
+		}
+		else
+		{
+			$results = array(
+				'success' => 'true',
+				'credentials' => array (
+					'role' => $role, /**J User Rolle**/
+					'token' => $jwt
+				)
+			);
+		}
+
+		return $results;
+	}
+
+
+
+	/**
 	 * getComponentJson
 	 *
 	 * @param   string   $component  The component name without the prefix  (e.g. 'content')
@@ -84,16 +127,30 @@ class DD_RestHelper
 		return JModelLegacy::getInstance($type, $prefix);
 	}
 
+	/**
+	 * getJWT
+	 *
+	 * @return string
+	 */
 	public function getJWT()
 	{
 		$nbf = time();
 
-		$key = '7e716d0e702df0505fc72e2b89467910'; // "example_key";
+		// "example_key";
+		$key = '7e716d0e702df0505fc72e2b89467910';
+
+		/*
+		* The "iss" (issuer) claim identifies the principal that issued the JWT.  The processing of this claim is generally application specific. The "iss" value is a case-sensitive string containing a StringOrURI value.  Use of this claim is OPTIONAL.
+		* The "aud" (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the aud claim when this claim is present, then the JWT MUST be rejected.
+		* The "iat" (issued at) claim identifies the time at which the JWT was issued.
+		* Not before (nbf) - Similarly, the not-before time claim identifies the time on which the JWT will start to be accepted for processing.
+		*/
 		$token = array(
-			"iss" => "http://" . $_SERVER['HTTP_HOST'], /*"http://dev1.hr-it-solutions.net"*/
-			"aud" => "http://devreborn.dev4.hr-it-solutions.net", // The "aud" (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the aud claim when this claim is present, then the JWT MUST be rejected.
-			"iat" => time() - 60 * 10,/*1356999524*/ // The "iat" (issued at) claim identifies the time at which the JWT was issued.
-			"nbf" => $nbf // Not before (nbf) - Similarly, the not-before time claim identifies the time on which the JWT will start to be accepted for processing.
+			// TODO switch http / https
+			"iss" => "http://" . JUri::getInstance()->getHost(),
+			"aud" => "http://devreborn.dev4.hr-it-solutions.net",
+			"iat" => time() - 60 * 10,/*1356999524*/
+			"nbf" => $nbf
 		);
 
 		/**
